@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.NUTRIFIT" parent="android:Theme.Material.Light.NoActionBar">
+        <!-- Đặt background tối để tránh flash trắng -->
+        <item name="android:windowBackground">@color/background_dark</item>
+        <!-- Tắt animation mặc định -->
+        <item name="android:windowAnimationStyle">@null</item>
+        <!-- Đảm bảo fullscreen -->
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+</resources>

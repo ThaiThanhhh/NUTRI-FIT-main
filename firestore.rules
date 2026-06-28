@@ -1,0 +1,38 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Quy tắc cho các collection gốc
+    match /exercises/{exerciseId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /meals/{mealId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // *** QUY TẮC MỚI CHO COLLECTION "daily_intakes" CẤP CAO NHẤT ***
+    match /daily_intakes/{intakeId} {
+      // User có thể đọc, cập nhật, xóa tài liệu nếu họ là chủ sở hữu (dựa trên trường userId).
+      allow read, update, delete: if request.auth != null && request.auth.uid == resource.data.userId;
+      // User có thể tạo tài liệu mới nếu họ tự gán mình là chủ sở hữu.
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+    }
+
+    // Quy tắc cho collection người dùng
+    match /users/{userId} {
+      // Cho phép user đọc và cập nhật thông tin của chính họ.
+      allow read, update: if request.auth != null && request.auth.uid == userId;
+      // Cho phép user tự tạo tài liệu.
+      allow create: if request.auth != null;
+
+      // Quy tắc cho sub-collection "completed_workouts"
+      match /completed_workouts/{workoutId} {
+        allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+      }
+
+      // Quy tắc cho sub-collection `daily_intakes` đã được di chuyển ra ngoài.
+    }
+  }
+}
