@@ -44,10 +44,11 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import coil.compose.rememberImagePainter
+import coil.compose.AsyncImage
 import com.example.nutrifit.R
 import com.example.nutrifit.data.model.DailyIntake
 import com.example.nutrifit.data.model.Exercise
+import com.example.nutrifit.data.model.Meal
 import com.example.nutrifit.ui.navigation.NavRoutes
 import com.example.nutrifit.ui.screens.meal.MealCard
 import com.example.nutrifit.viewmodel.DailyIntakeState
@@ -325,7 +326,7 @@ fun HomeScreen(navController: NavController) {
                                     .padding(horizontal = 16.dp)
                             ) {
                                 state.meals.forEach { meal ->
-                                    MealCard(meal = meal) {
+                                    HomeMealCard(meal = meal) {
                                         navController.navigate("${NavRoutes.MealDetail}/${meal.id}")
                                     }
                                     Spacer(modifier = Modifier.width(16.dp))
@@ -489,32 +490,79 @@ fun WeeklyProgressChart(weeklyData: List<WeeklyData>, calorieGoal: Int) {
 
 @Composable
 fun ExerciseCard(exercise: Exercise, onClick: () -> Unit) {
+    val context = LocalContext.current
+    val imageResId = context.resources.getIdentifier(exercise.imageUrl, "drawable", context.packageName)
+
     Card(
         modifier = Modifier
             .width(200.dp)
+            .height(340.dp)
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(16.dp),
+        elevation = 4.dp
+    ) {
+        Column {
+            if (imageResId != 0) {
+                Image(
+                    painter = painterResource(id = imageResId),
+                    contentDescription = exercise.name,
+                    modifier = Modifier
+                        .height(160.dp) // Tăng chiều cao vùng chứa ảnh
+                        .fillMaxWidth(),
+                    contentScale = ContentScale.Crop // QUAN TRỌNG: Phủ kín toàn bộ vùng chứa
+                )
+            } else {
+                AsyncImage(
+                    model = exercise.imageUrl,
+                    contentDescription = exercise.name,
+                    modifier = Modifier
+                        .height(160.dp)
+                        .fillMaxWidth(),
+                    contentScale = ContentScale.Crop
+                )
+            }
+            Column(modifier = Modifier.padding(12.dp)) {
+                Text(text = exercise.name, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.Black, maxLines = 1)
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(text = "Nhóm cơ: ${exercise.muscleGroup}", fontSize = 13.sp, color = Color.Gray, maxLines = 1)
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(text = "Độ khó: ${exercise.difficulty}", fontSize = 13.sp, color = Color.Gray)
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(text = "Reps: ${exercise.reps}", fontSize = 13.sp, color = Color.Gray, maxLines = 2, minLines = 2) 
+                Spacer(modifier = Modifier.weight(1f))
+                Text(text = "${exercise.caloriesBurned} kcal", fontSize = 16.sp, color = Color.Red, fontWeight = FontWeight.Bold)
+            }
+        }
+    }
+}
+
+@Composable
+fun HomeMealCard(meal: Meal, onClick: () -> Unit) {
+    val context = LocalContext.current
+    val imageResId = context.resources.getIdentifier(meal.imageRes, "drawable", context.packageName)
+    Card(
+        modifier = Modifier
+            .width(180.dp)
+            .height(280.dp)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
         elevation = 4.dp
     ) {
         Column {
             Image(
-                painter = rememberImagePainter(data = exercise.imageUrl),
-                contentDescription = exercise.name,
+                painter = painterResource(id = if (imageResId != 0) imageResId else R.drawable.logo),
+                contentDescription = meal.name,
                 modifier = Modifier
-                    .height(120.dp)
+                    .height(140.dp)
                     .fillMaxWidth(),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.FillBounds
             )
             Column(modifier = Modifier.padding(12.dp)) {
-                Text(text = exercise.name, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.Black)
+                Text(text = meal.name, fontWeight = FontWeight.Bold, fontSize = 15.sp, color = Color.Black, maxLines = 1)
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(text = "Nhóm cơ: ${exercise.muscleGroup}", fontSize = 14.sp, color = Color.Black)
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(text = "Độ khó: ${exercise.difficulty}", fontSize = 14.sp, color = Color.Black)
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(text = "Reps: ${exercise.reps}", fontSize = 14.sp, color = Color.Black)
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(text = "${exercise.caloriesBurned} kcal", fontSize = 14.sp, color = Color.Red, fontWeight = FontWeight.SemiBold)
+                Text(text = "${meal.calories} kcal", fontSize = 13.sp, color = Color(0xFF4CAF50))
+                Spacer(modifier = Modifier.weight(1f))
+                Text(text = "Thời gian: ${meal.time}", fontSize = 12.sp, color = Color.Gray)
             }
         }
     }

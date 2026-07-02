@@ -41,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -60,11 +61,11 @@ fun getMuscleGroupIcon(groupName: String): Int {
     return when (groupName) {
         "Ngực" -> R.drawable.ic_muscle_nguc
         "Lưng" -> R.drawable.ic_muscle_lung
-        "Chân" -> R.drawable.ic_muscle_duitruoc // Lấy đại diện cho chân
+        "Chân" -> R.drawable.ic_muscle_duitruoc
         "Vai" -> R.drawable.ic_muscle_vai
         "Bụng" -> R.drawable.ic_muscle_bung
         "Toàn thân" -> R.drawable.ic_muscle_toanthan
-        else -> R.drawable.logo // Icon mặc định
+        else -> R.drawable.logo
     }
 }
 
@@ -195,6 +196,9 @@ fun MuscleChip(name: String, isSelected: Boolean, onClick: () -> Unit, modifier:
 
 @Composable
 fun WorkoutCard(workout: Workout, onClick: () -> Unit) {
+    val context = LocalContext.current
+    val imageResId = context.resources.getIdentifier(workout.imageUrl, "drawable", context.packageName)
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -208,14 +212,25 @@ fun WorkoutCard(workout: Workout, onClick: () -> Unit) {
             modifier = Modifier.height(130.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AsyncImage(
-                model = workout.imageUrl,
-                contentDescription = workout.name,
-                modifier = Modifier
-                    .size(130.dp)
-                    .clip(RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)),
-                contentScale = ContentScale.Crop
-            )
+            if (imageResId != 0) {
+                Image(
+                    painter = painterResource(id = imageResId),
+                    contentDescription = workout.name,
+                    modifier = Modifier
+                        .size(130.dp)
+                        .clip(RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                AsyncImage(
+                    model = workout.imageUrl,
+                    contentDescription = workout.name,
+                    modifier = Modifier
+                        .size(130.dp)
+                        .clip(RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            }
             Column(
                 modifier = Modifier.padding(16.dp).fillMaxSize(),
                 verticalArrangement = Arrangement.SpaceBetween
