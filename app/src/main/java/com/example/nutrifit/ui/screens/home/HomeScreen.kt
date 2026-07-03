@@ -496,7 +496,7 @@ fun ExerciseCard(exercise: Exercise, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .width(200.dp)
-            .height(340.dp)
+            .height(380.dp) // Tăng thêm chiều cao để hiện đầy đủ chữ ở dưới
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
         elevation = 4.dp
@@ -507,9 +507,9 @@ fun ExerciseCard(exercise: Exercise, onClick: () -> Unit) {
                     painter = painterResource(id = imageResId),
                     contentDescription = exercise.name,
                     modifier = Modifier
-                        .height(160.dp) // Tăng chiều cao vùng chứa ảnh
+                        .height(160.dp)
                         .fillMaxWidth(),
-                    contentScale = ContentScale.Crop // QUAN TRỌNG: Phủ kín toàn bộ vùng chứa
+                    contentScale = ContentScale.Crop
                 )
             } else {
                 AsyncImage(
@@ -521,16 +521,22 @@ fun ExerciseCard(exercise: Exercise, onClick: () -> Unit) {
                     contentScale = ContentScale.Crop
                 )
             }
-            Column(modifier = Modifier.padding(12.dp)) {
+            Column(modifier = Modifier.padding(12.dp).fillMaxHeight()) { // Thêm fillMaxHeight cho cột chữ
                 Text(text = exercise.name, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.Black, maxLines = 1)
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(6.dp))
                 Text(text = "Nhóm cơ: ${exercise.muscleGroup}", fontSize = 13.sp, color = Color.Gray, maxLines = 1)
-                Spacer(modifier = Modifier.height(2.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(text = "Độ khó: ${exercise.difficulty}", fontSize = 13.sp, color = Color.Gray)
-                Spacer(modifier = Modifier.height(2.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(text = "Reps: ${exercise.reps}", fontSize = 13.sp, color = Color.Gray, maxLines = 2, minLines = 2) 
-                Spacer(modifier = Modifier.weight(1f))
-                Text(text = "${exercise.caloriesBurned} kcal", fontSize = 16.sp, color = Color.Red, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.weight(1f)) // Đẩy calo xuống đáy
+                Text(
+                    text = "${exercise.caloriesBurned} kcal", 
+                    fontSize = 17.sp, // Tăng nhẹ cỡ chữ calo
+                    color = Color.Red, 
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
             }
         }
     }
