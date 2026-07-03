@@ -1,5 +1,6 @@
 package com.example.nutrifit.ui.screens.workout
 
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -202,14 +203,14 @@ fun WorkoutCard(workout: Workout, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .height(150.dp) // Tăng chiều cao thẻ từ 130 lên 150
             .border(1.dp, Color(0xFFEEEEEE), RoundedCornerShape(16.dp))
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(0.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Row(
-            modifier = Modifier.height(130.dp),
+            modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (imageResId != 0) {
@@ -217,7 +218,7 @@ fun WorkoutCard(workout: Workout, onClick: () -> Unit) {
                     painter = painterResource(id = imageResId),
                     contentDescription = workout.name,
                     modifier = Modifier
-                        .size(130.dp)
+                        .size(150.dp) // Tăng kích thước ảnh cho khớp khung hình
                         .clip(RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)),
                     contentScale = ContentScale.Crop
                 )
@@ -226,57 +227,41 @@ fun WorkoutCard(workout: Workout, onClick: () -> Unit) {
                     model = workout.imageUrl,
                     contentDescription = workout.name,
                     modifier = Modifier
-                        .size(130.dp)
+                        .size(150.dp)
                         .clip(RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)),
                     contentScale = ContentScale.Crop
                 )
             }
             Column(
-                modifier = Modifier.padding(16.dp).fillMaxSize(),
-                verticalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier.padding(16.dp).fillMaxHeight(),
+                verticalArrangement = Arrangement.Center // Căn giữa nội dung chữ
             ) {
-                Column {
-                    Text(
-                        text = workout.name,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black,
-                        maxLines = 1
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "Độ khó: ${workout.difficulty}",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Gray
-                    )
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Text(
-                        text = "Reps: ${workout.reps}",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Gray
-                    )
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Text(
-                        text = "${workout.caloriesBurned} kcal",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Red,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
-
-                Row {
-                    workout.targets.take(2).forEach {
-                        Text(
-                            text = it,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier
-                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f), RoundedCornerShape(4.dp))
-                                .padding(horizontal = 6.dp, vertical = 2.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                    }
-                }
+                Text(
+                    text = workout.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
+                    maxLines = 1
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "Độ khó: ${workout.difficulty}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.Gray
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = "Reps: ${workout.reps}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.Gray
+                )
+                Spacer(modifier = Modifier.height(6.dp)) // Tạo khoảng cách
+                Text(
+                    text = "${workout.caloriesBurned} kcal",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color.Red,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }

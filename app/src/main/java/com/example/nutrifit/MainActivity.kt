@@ -53,8 +53,8 @@ class MainActivity : ComponentActivity() {
         // Ask for notification permission on startup
         askNotificationPermission()
 
-        // Seed initial data to Firebase
-        DataSeeder.seedAllData()
+        // Data has been seeded successfully. Disabled to prevent temporary data loss on startup.
+        // DataSeeder.seedAllData()
 
         setContent {
             NutriFitTheme {

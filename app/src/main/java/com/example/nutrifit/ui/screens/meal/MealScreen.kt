@@ -211,14 +211,16 @@ fun MealScreen(navController: NavController) {
                         Text(selectedCategory.value, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.Black, modifier = Modifier.padding(bottom = 16.dp))
 
                         val filteredMeals = allMeals.filter { meal ->
-                            when (selectedCategory.value) {
+                            // Lọc theo Buổi ăn (nếu không chọn 'Cả ngày')
+                            val matchTime = if (selectedMealTime.value == "Cả ngày") true else meal.time.contains(selectedMealTime.value, ignoreCase = true) || meal.description.contains(selectedMealTime.value, ignoreCase = true)
+                            
+                            // Lọc theo Loại (Category)
+                            val matchCategory = when (selectedCategory.value) {
                                 "Tất cả" -> true
-                                "Sinh tố", "Nước uống" -> meal.category == "Drink"
-                                "Cơm" -> meal.category == "Main"
-                                "Rau củ" -> meal.name.contains("Salad", ignoreCase = true) || meal.name.contains("Rau", ignoreCase = true)
-                                "Món nước" -> meal.category == "Soup"
                                 else -> meal.category.equals(selectedCategory.value, ignoreCase = true)
                             }
+                            
+                            matchTime && matchCategory
                         }
 
                         if (filteredMeals.isEmpty()) {
