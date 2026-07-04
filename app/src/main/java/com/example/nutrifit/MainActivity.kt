@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import com.example.nutrifit.ui.navigation.AppNavHost
 import com.example.nutrifit.theme.NutriFitTheme
+import com.example.nutrifit.utils.DataSeeder
 
 class MainActivity : ComponentActivity() {
 
@@ -51,6 +52,9 @@ class MainActivity : ComponentActivity() {
 
         // Ask for notification permission on startup
         askNotificationPermission()
+
+        // Data has been seeded successfully. Disabled to prevent temporary data loss on startup.
+        // DataSeeder.seedAllData()
 
         setContent {
             NutriFitTheme {

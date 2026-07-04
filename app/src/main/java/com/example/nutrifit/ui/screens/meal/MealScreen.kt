@@ -211,14 +211,16 @@ fun MealScreen(navController: NavController) {
                         Text(selectedCategory.value, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.Black, modifier = Modifier.padding(bottom = 16.dp))
 
                         val filteredMeals = allMeals.filter { meal ->
-                            when (selectedCategory.value) {
+                            // Lọc theo Buổi ăn (nếu không chọn 'Cả ngày')
+                            val matchTime = if (selectedMealTime.value == "Cả ngày") true else meal.time.contains(selectedMealTime.value, ignoreCase = true) || meal.description.contains(selectedMealTime.value, ignoreCase = true)
+                            
+                            // Lọc theo Loại (Category)
+                            val matchCategory = when (selectedCategory.value) {
                                 "Tất cả" -> true
-                                "Sinh tố", "Nước uống" -> meal.category == "Drink"
-                                "Cơm" -> meal.category == "Main"
-                                "Rau củ" -> meal.name.contains("Salad", ignoreCase = true) || meal.name.contains("Rau", ignoreCase = true)
-                                "Món nước" -> meal.category == "Soup"
                                 else -> meal.category.equals(selectedCategory.value, ignoreCase = true)
                             }
+                            
+                            matchTime && matchCategory
                         }
 
                         if (filteredMeals.isEmpty()) {
@@ -287,20 +289,29 @@ fun MealCard(meal: Meal, onClick: () -> Unit) {
     val context = LocalContext.current
     val imageResId = context.resources.getIdentifier(meal.imageRes, "drawable", context.packageName)
     Box(
-        modifier = Modifier.width(190.dp).height(240.dp).clickable { onClick() }.border(1.dp, Color(0xFFE0E0E0), RoundedCornerShape(14.dp)).background(Color.White, RoundedCornerShape(14.dp)).padding(10.dp)
+        modifier = Modifier
+            .width(190.dp)
+            .height(260.dp) // Tăng nhẹ chiều cao
+            .clickable { onClick() }
+            .border(1.dp, Color(0xFFE0E0E0), RoundedCornerShape(14.dp))
+            .background(Color.White, RoundedCornerShape(14.dp))
+            .padding(10.dp)
     ) {
         Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.Start) {
             Image(
                 painter = painterResource(id = if (imageResId != 0) imageResId else R.drawable.logo),
                 contentDescription = meal.name,
-                modifier = Modifier.fillMaxWidth().height(130.dp).clip(RoundedCornerShape(12.dp)),
-                contentScale = ContentScale.Crop
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(150.dp) // Cố định chiều cao ảnh lớn hơn
+                    .clip(RoundedCornerShape(12.dp)),
+                contentScale = ContentScale.FillBounds // Đảm bảo ảnh lấp đầy khung hình
             )
             Spacer(modifier = Modifier.height(10.dp))
-            Text(meal.name, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = Color.Black, maxLines = 2, lineHeight = 18.sp)
-            Spacer(modifier = Modifier.height(6.dp))
+            Text(meal.name, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = Color.Black, maxLines = 1)
+            Spacer(modifier = Modifier.height(4.dp))
             Text("${meal.calories} kcal", fontSize = 13.sp, color = Color(0xFF4CAF50), fontWeight = FontWeight.Medium)
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.weight(1f))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(painter = painterResource(id = R.drawable.ic_time), contentDescription = "Time", tint = Color.Gray, modifier = Modifier.size(14.dp))
                 Spacer(modifier = Modifier.width(4.dp))

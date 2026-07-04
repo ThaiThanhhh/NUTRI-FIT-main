@@ -55,6 +55,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
 import com.example.nutrifit.data.model.Workout
 import com.example.nutrifit.viewmodel.WorkoutViewModel
 import com.example.nutrifit.viewmodel.WorkoutsState
@@ -124,20 +126,34 @@ fun WorkoutDetailScreen(
 
 @Composable
 private fun HeaderSection(workout: Workout, navController: NavController) {
+    val context = LocalContext.current
+    val imageResId = context.resources.getIdentifier(workout.imageUrl, "drawable", context.packageName)
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(280.dp)
     ) {
-        AsyncImage(
-            model = workout.imageUrl,
-            contentDescription = workout.name,
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)),
-            contentScale = ContentScale.Crop
-        )
-        // Lớp phủ màu tối để chữ dễ đọc hơn
+        if (imageResId != 0) {
+            Image(
+                painter = painterResource(id = imageResId),
+                contentDescription = workout.name,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)),
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            AsyncImage(
+                model = workout.imageUrl,
+                contentDescription = workout.name,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)),
+                contentScale = ContentScale.Crop
+            )
+        }
+        // Lớp phủ màu tối
         Box(
             modifier = Modifier
                 .fillMaxSize()
